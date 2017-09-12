@@ -7,11 +7,16 @@ size_t advanced_word_length(const char *word);
 
 
 int main(int argc, char** argv){
+  if(argc > 1){
+    printf("I don't take any arguments...\n");
+    exit(0);
+  }
+
   char c[100];
-  int lettercount;
+
   printf("enter your word: ");
   scanf("%s", c);
-  lettercount = basic_word_length(c);
+  int lettercount = basic_word_length(c);
   printf("after the basic word length we get , %d\n", lettercount);
   lettercount = advanced_word_length(c);
   printf("after the advanced word length we get, %d\n", lettercount);
@@ -19,15 +24,14 @@ int main(int argc, char** argv){
 }
 
 
-
 int basic_word_length(char *word){
-  int i = 0;
-  while(word[i] != 0){
-    i++;
-  }
+  int i;
+  for(i = 0;word[i] != 0; ++i);
   return i;
 }
 
+
+// The actual string length function from OpenBSD
 size_t advanced_word_length(const char *word){
   const char *s;
   for (s = word; *s; ++s);
