@@ -5,7 +5,6 @@
 
 void sort_this_fool(char list[10][100], int num_of_elements);
 void print_sorted_list(char list[10][100], int num_of_elements);
-int dictionary(char* word1, char* word2);
 void make_lower(char* word);
 void time_to_use_qsort(char* list[10], int num_of_elements);
 
@@ -30,14 +29,16 @@ int main(int argc, char* argv[]){
   print_sorted_list(word_list, argc - 1);
 }
 
-void sort_this_fool(char word_list[10][100], int num_of_elements){  
+void sort_this_fool(char word_list[10][100], int num_of_elements){ 
   int ordered_list[10];
-  char *temp;
-
+  char temp[10];
+  
   for (int i = 0; i < num_of_elements; i++) {
     make_lower(word_list[i]);
     for (int j = 0; j < num_of_elements - 1; j++) {
       make_lower(word_list[j]);
+
+      // this condition checks for less than equality
       if (strcmp(word_list[j], word_list[j + 1]) > 0) {
         strcpy(temp, word_list[j]);
         strcpy(word_list[j], word_list[j + 1]);
