@@ -19,9 +19,6 @@ int main(int argc, char** argv){
     exit(0);
   }
 
-  for(wordcount = 0; fscanf(g, "%s", w) == 1; ++wordcount){
-    continue;
-  }
+  for(wordcount = 0;fscanf(g, "%s", w) == 1;++wordcount);
   printf("There are %d words\n", wordcount);
-
 }

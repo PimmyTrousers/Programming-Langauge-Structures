@@ -68,7 +68,7 @@ int dictionary(char* word1, char* word2){
 
     else if(!flag && size2 > size1)
       return 1;
-} 
+}
 
 void make_lower(char* word){
   for(int i = 0; i < strlen(word); ++i){
