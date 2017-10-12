@@ -1,5 +1,8 @@
 (define test_list (list 2 3 4 5))
 (define bin (list 1 1 0 1))
+(define bin1 (list 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1))
+(define bin2 (list 1 1))
+(define bin3 (list 0 0 0 0 1))
 
 (define (new_line)
     (display "\n")
@@ -35,10 +38,15 @@
     ((null? binary_list) result)
         (else
             (if (= (car binary_list) 1)
+
+                ;; CASE IF WE ARE LOOKING AT A 1
+
                 (bintodec (cdr binary_list) ; passes the tail of the list
                           (+ result (expt 2 place)) ; adds the operation to the result 
                           (+ place 1) ; moves the place over by one 
                 )
+
+                ;; CASE IF WE ARE LOOKING AT A 0
 
                 (bintodec (cdr binary_list) ; passes the tail of the list
                           result ; since we found a 0 do nothing to the result 
@@ -49,9 +57,10 @@
     )
 )
 
-
-
 (bintodec_helper (reverse_list bin))
+(bintodec_helper (reverse_list bin1))
+(bintodec_helper (reverse_list bin2))
+(bintodec_helper (reverse_list bin3))
 
 
 
