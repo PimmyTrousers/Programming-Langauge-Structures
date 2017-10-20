@@ -8,8 +8,6 @@
     (display "\n")
 )
 
-
-
 (define (helper test_list empty_list)
     (cond
     ((null? test_list) empty_list)
@@ -31,6 +29,10 @@
 
 (define (bintodec_helper bin)
     (bintodec bin 0 0)
+)
+
+(define (dectobin_helper dec)
+    (dectobin dec (list ))
 )
 
 (define (bintodec binary_list result place)
@@ -57,14 +59,20 @@
     )
 )
 
+(define (dectobin decimal result)
+    ;; (quotient 37 10) = 3
+    ;; (remainder 37 10) = 7
+    (cond 
+    ((= decimal 0) result)
+        (else
+            (remainder decimal 2)
+            (dectobin (quotient decimal 2) (cons (remainder decimal 2) result))
+        )
+    )
+)
+
 (bintodec_helper (reverse_list bin))
 (bintodec_helper (reverse_list bin1))
 (bintodec_helper (reverse_list bin2))
 (bintodec_helper (reverse_list bin3))
-
-
-
-
-
-
-
+(dectobin_helper 13)
