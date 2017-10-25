@@ -42,7 +42,6 @@
 
 (define (pretty_print matrix test)
     (display matrix)
-   ;; (new_line test)
     (cond
     ((null? matrix1) matrix)
         (else 

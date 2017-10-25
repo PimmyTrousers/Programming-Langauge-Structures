@@ -1,0 +1,18 @@
+
+
+(define x 3)
+
+(define expression1 (deriv '(log (* x x))   'x))
+(eval expression1  user-initial-environment) ; the environment has x defined as 3
+
+(define expression2 (deriv '(/ (cos (* x x)) (+ x 1))   'x) )
+(eval expression2  user-initial-environment) ; the environment has x defined as 3
+
+(define expression3 (deriv '(exp  (/ (sin (* x x)) (+ x 1)))   'x) )
+(eval expression3  user-initial-environment) ; the environment has x defined as 3
+
+
+(define x 5)
+(define expression4 (deriv  (deriv '(log (* x x))   'x) 'x)  )
+expression4
+(eval expression4  user-initial-environment) ; the environment has x defined as 5
