@@ -1,0 +1,28 @@
+%!
+
+72 720 moveto
+
+/Helvetica findfont 16 scalefont setfont
+
+/linear
+{
+  /c exch def
+  /b exch def
+  0 b eq { /sick  } { 0 c sub b div } ifelse
+}
+def
+
+
+10 20 linear
+20 string   cvs   show   (  ) show
+
+10 -30 linear
+20 string   cvs   show   (  ) show
+
+0 -30 linear
+20 string   cvs   show   (  ) show
+
+
+
+
+showpage

@@ -106,9 +106,6 @@
   )
 )
 
-
-
-
 (deriv '(+ x 3) 'x)
 (deriv '(* x y) 'x)
 (deriv '(* (* x x) (+ x 3))  'x)
@@ -116,4 +113,3 @@
 (deriv '(+ x ) 'x)
 (deriv '(- x 3) 'x)
 (deriv '(sin x) 'x)
-

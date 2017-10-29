@@ -1,0 +1,56 @@
+72 720 moveto
+
+/Helvetica findfont 16 scalefont setfont
+
+/Quadratic
+{
+    /c exch def
+    /b exch def
+    /a exch def
+    0 a eq {
+            c b linear
+            20 string cvs show ( ) show % if linear, shows the linear root
+            % 20 string cvs show (linear_root = ) show 
+        } {
+            a b c part2
+            20 string cvs show ( ) show % shows the subtraction root
+            % 20 string cvs show (part2 = ) show 
+            a b c part1 
+            20 string cvs show ( ) show % shows the addition root
+            % 20 string cvs show (part1 = ) show 
+        } ifelse 
+}
+def
+
+/linear
+{
+  /c exch def
+  /b exch def
+  0 b eq { /sick  } { 0 c sub b div } ifelse
+}
+def
+
+/part1
+{
+    /c exch def
+    /b exch def
+    /a exch def
+    0 b sub b b mul 4 a mul c mul sub sqrt sub  2 a mul div
+}
+def
+
+/part2 
+{
+    /c exch def
+    /b exch def
+    /a exch def
+    0 b sub b b mul 4 a mul c mul sub sqrt add  2 a mul div 
+}
+def
+
+0 10 20 Quadratic % linear check
+
+1 5 6 Quadratic % quadratic check
+
+6 -1 -2 Quadratic
+
