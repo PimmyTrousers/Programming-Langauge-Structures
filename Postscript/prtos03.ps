@@ -1,0 +1,33 @@
+%!
+
+/Helvetica findfont 16 scalefont setfont
+
+
+
+/prtos
+% this does NOT consume the item on the top of the stack
+{
+  dup
+  (  ) show
+  200 string % create a string of 20 characters
+  cvs % convert object to string :   object string cvs  =>  string   
+  show
+}
+def
+
+
+
+
+72 720 moveto
+
+72 720 30 3 mul sub moveto
+
+3 5 le 
+{  
+  ( yes )  show
+}
+prtos
+if
+
+
+showpage

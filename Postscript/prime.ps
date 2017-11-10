@@ -1,0 +1,31 @@
+72 720 moveto
+
+/Helvetica findfont 16 scalefont setfont
+
+/prime
+{
+    /a exch def
+    /i 2 def
+    {
+        1 a eq {
+            /no exit
+        } if 
+        2 a eq {
+            /yes exit
+        } if
+        0 a i mod eq {
+            /no exit
+        } if
+        2 a i idiv eq {
+            /yes exit
+        } if
+        /i 1 i add def
+    } loop
+} def
+
+7 prime
+20 string cvs show ( ) show
+13 prime
+20 string cvs show ( ) show
+143 prime
+20 string cvs show ( ) show

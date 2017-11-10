@@ -1,0 +1,38 @@
+%!
+
+/Helvetica findfont 16 scalefont setfont
+
+/prnum
+{
+  ( ) show
+  100 string % create a string of 20 characters
+  cvs % convert object to string :   object string cvs  =>  string   
+  show
+}
+def
+
+
+72  72 10 mul moveto
+
+
+/sum_to_mark
+%   mark  Num0 Num1 Num2 .... Numn   sum_to_mark
+%   sum_of_the_numbers
+{
+  counttomark
+  0  exch  { add  }  repeat
+  exch pop % dispose of mark but leave answer on statk
+}
+def
+
+
+
+mark 1 7 8 2 sum_to_mark
+prnum
+
+mark sum_to_mark
+prnum
+
+
+
+showpage

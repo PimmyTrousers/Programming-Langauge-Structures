@@ -1,0 +1,81 @@
+72 720 moveto
+
+/Helvetica findfont 16 scalefont setfont
+
+/GCD
+{
+    /a exch def
+    /b exch def
+    a b eq {
+        a
+    } if
+    a b gt {
+        a b sub b GCD
+    } if
+    a b lt {
+        a b a sub GCD
+    } if  
+} def
+
+/LCM
+{
+    /a exch def
+    /b exch def
+    a b mul a b GCD div
+} def
+
+/LCM2
+{
+    /b exch def
+    /a exch def
+    /ma a def
+    /mb b def
+    {
+        ma mb eq {exit} if
+        ma mb gt {
+                /mb mb b add def
+             } {
+                /ma ma a add def 
+             } ifelse
+    } loop
+    ma
+} def
+
+/LCM3
+% |    STACK GUIDE    |
+%  BOTTOM <------> TOP 
+{
+    2 copy % 15 9 15 9
+    {
+        2 copy % 15 9 15 9 15 9
+        eq {
+            exit
+        } if 
+       2 copy % 15 9 15 9 15 9
+        gt {
+            0 index % 15 9 15 9 9
+            3 index % 15 9 15 9 9 9 
+            add  % 15 9 15 9 18
+            exch % 15 9 15 18 9
+            pop % 15 9 15 18 
+        } { 
+            1 index 
+            4 index
+            add 
+            3 1 roll
+            exch pop
+        } ifelse
+    } loop
+    4 1 roll % 18 15 9 15
+    pop % 18 15 9 
+    pop % 18 15 
+    pop % 18
+} def
+
+
+9 9 LCM3
+20 string cvs show ( ) show
+9 17 LCM3 
+20 string cvs show ( ) show
+9 15 LCM3 
+20 string cvs show ( ) show

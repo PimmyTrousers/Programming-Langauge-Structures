@@ -67,6 +67,16 @@
    )
   )
 
+  (define (intermix_jeff list_1 list_2)
+    (cond
+      ((null? list_1) list_2)
+      ((null? list_2) list_1)
+      (else
+        (cons (car list_1) (cons (car list_2) (intermix (cdr list_1) (cdr list_2))))
+      )
+    )
+  )
+
 
 (define p (list 1 2 3 4 5 6 7 8))
 (define q (list -1 -2 -3 -4 -5 -6 -7 -8 -9))

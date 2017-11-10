@@ -1,0 +1,49 @@
+%!
+
+/Helvetica findfont 16 scalefont setfont
+
+/prnum
+%  this prints AND consumes the top of the stack
+%  item  prnum
+%  -
+{
+  ( ) show
+  100 string % create a string of 20 characters
+  cvs % convert object to string :   object string cvs  =>  string   
+  show
+}
+def
+
+
+
+/nprint
+%  print n items on stack in the order indicated WITHOUT consuming them
+%  a1 a2 ... an    n  nprint
+%  a1 a2 ... an
+{
+  /count_nprint  exch  def
+  
+  count_nprint
+  {
+    count_nprint -1 roll   
+
+    dup  % because we don't want to consume the items we print
+    ( ) show
+    100 string % create a string of 20 characters
+    cvs % convert object to string :   object string cvs  =>  string   
+    show    
+
+  }
+  repeat
+
+}
+def
+
+
+72 72 10 mul moveto
+100 200 300 400 500 600
+6 nprint
+
+
+
+showpage
