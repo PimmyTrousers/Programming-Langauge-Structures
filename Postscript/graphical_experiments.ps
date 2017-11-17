@@ -1,0 +1,114 @@
+%!
+
+/triangle
+% x0 y0 x1 y1 x2 y2  triangle -
+{
+   newpath
+   moveto
+   lineto
+   lineto
+   closepath
+   stroke
+} def
+
+
+/fill_triangle
+% x0 y0 x1 y1 x2 y2  fill_triangle -
+{
+   newpath
+   moveto
+   lineto
+   lineto
+   closepath
+   fill
+   stroke
+} def
+
+
+
+/rectangle
+% xll yll dx dy rectangle -
+{
+   newpath
+   /dy exch def
+   /dx exch def
+   /yll exch def
+   /xll exch def
+         xll   yll    moveto
+          dx     0    rlineto
+          0     dy    rlineto
+   0 dx sub      0    rlineto
+   closepath
+   stroke
+} def
+
+
+/fill_rectangle
+% xll yll dx dy fill_rectangle -
+{
+   newpath
+   /dy exch def
+   /dx exch def
+   /yll exch def
+   /xll exch def
+         xll   yll    moveto
+          dx     0    rlineto
+          0     dy    rlineto
+   0 dx sub      0    rlineto
+   closepath
+   fill
+   stroke
+} def
+
+
+
+
+
+0.8 0.5 0.7 setrgbcolor
+200 100   300 150   250 400  triangle
+
+5 setlinewidth
+300 100   400 150   350 400  triangle
+
+0.8 0.5 0.3 setrgbcolor  
+400 100   500 150   450 400  fill_triangle
+
+0 setlinejoin
+200 400   300 450   250 700  triangle
+
+1 setlinejoin
+300 400   400 450   350 700  triangle
+
+2 setlinejoin
+400 400   500 450   450 700  triangle  
+  
+
+  
+
+0.0 0.0 1.0 setrgbcolor
+  0   0  50  50  fill_rectangle
+ 50  50  50  50  fill_rectangle
+100 100  50  50  fill_rectangle
+
+1.0 0.7 0.0 setrgbcolor
+  0 150  40 200  fill_rectangle
+ 50 150  40 200  fill_rectangle
+100 150  40 200  fill_rectangle
+150 150  40 200  fill_rectangle
+200 150  40 200  fill_rectangle
+
+
+0.0 0.7 0.0 setrgbcolor
+10 setlinewidth
+200 150  40 200  rectangle
+
+
+1.0 0.3 0.0 setrgbcolor
+3 setlinewidth
+200 400 100 45 180 arc
+stroke
+
+
+showpage
+
+

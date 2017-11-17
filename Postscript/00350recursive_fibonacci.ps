@@ -1,0 +1,65 @@
+%!
+
+/Helvetica findfont 16 scalefont setfont
+
+/prnum
+%  this prints AND consumes the top of the stack
+%  item  prnum
+%  -
+{
+  ( ) show
+  100 string % create a string of 20 characters
+  cvs % convert object to string :   object string cvs  =>  string   
+  show
+}
+def
+
+
+
+/recursive_fibonacci
+{
+  dup  
+  2 le {
+    pop
+    1
+  }
+  {
+   dup   1  sub  recursive_fibonacci
+   exch
+   2 sub recursive_fibonacci
+   add
+  } ifelse
+  
+}
+def
+
+/recursive_fibonacci1
+{
+  dup
+  2 le {
+    pop
+    1
+  }{
+    dup 1 sub recursive_fibonacci1
+    exch
+    2 sub recursive_fibonacci1
+    add
+  } ifelse 
+}
+
+
+100 720 moveto
+
+1 recursive_fibonacci prnum
+2 recursive_fibonacci prnum
+3 recursive_fibonacci prnum
+4 recursive_fibonacci prnum
+5 recursive_fibonacci prnum
+6 recursive_fibonacci prnum
+7 recursive_fibonacci prnum
+8 recursive_fibonacci prnum
+
+
+
+
+showpage

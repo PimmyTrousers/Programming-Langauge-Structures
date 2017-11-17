@@ -1,0 +1,74 @@
+%!
+
+/Helvetica findfont 16 scalefont setfont
+
+72 72 10 mul moveto
+
+/prnum
+{
+  ( ) show
+  100 string % create a string of 20 characters
+  cvs % convert object to string :   object string cvs  =>  string   
+  show
+}
+def
+
+
+
+/prime
+{
+  /n exch def
+  /i 2 def
+  {
+    n i mod  0 eq  { exit } if
+    /i  1 i add def
+  } loop
+
+  i n eq prnum  % output true or false
+} def
+
+
+2 prime
+3 prime
+4 prime
+5 prime
+6 prime
+7 prime
+8 prime
+9 prime
+19 prime
+143 prime
+1979 prime
+
+
+72 72 9 mul moveto
+
+
+/primeB
+{
+  1
+  {
+    1 add
+    2 copy
+    mod  0 eq  { exit } if
+  } loop
+
+  eq prnum  % output true or false
+} def
+
+
+
+2 primeB
+3 primeB
+4 primeB
+5 primeB
+6 primeB
+7 primeB
+8 primeB
+9 primeB
+19 primeB
+143 primeB
+1979 primeB
+
+
+showpage

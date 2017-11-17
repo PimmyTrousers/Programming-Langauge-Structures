@@ -1,0 +1,256 @@
+%!
+
+/Helvetica findfont 16 scalefont setfont
+
+72 72 10 mul moveto
+
+/prnum { ( ) show 100 string cvs show } def
+
+
+/stpr{
+		count {prnum} repeat
+} def
+
+/orthovectors{
+	exch
+ 	3 1 roll	
+ 	exch % gets to x x y y 
+ 	4 copy
+    sub %gets Uy (y1-y0)
+ 	3 1 roll
+ 	exch
+ 	sub %gets Ux (x1-x0)
+ 	exch
+ 	6 1 roll
+ 	6 1 roll
+ 	exch
+	sub % gets Vx (y0-y1)
+ 	3 1 roll
+ 	exch
+ 	sub %gets Vy (x1-x0)
+} def
+
+/addpoints
+{
+	exch
+	3 1 roll
+	add
+	3 1 roll
+	add
+	exch
+} def
+
+
+/kochinvert
+{ 
+	exch
+	dup 0 eq 
+	{
+		exch
+		3 {rand 16#7fffffff div dup .8 le {.15 add} if} repeat setrgbcolor
+		6 1 roll
+		5 1 roll
+		4 2 roll
+		newpath
+		moveto
+		lineto
+		closepath
+		stroke
+		pop pop
+	}
+
+	{
+		exch
+		6 1 roll
+		5 1 roll % sets koch # back at bottom
+	
+		4 copy 
+		orthovectors
+		4 {8 1 roll} repeat
+
+		%Gets first third point
+		2 {7 index 3 div} repeat
+		2 {5 index} repeat
+		addpoints
+
+		%Gets eq. triangle point
+		2 {9 index 2 div} repeat
+		2 {7 index} repeat
+		addpoints
+		2 {9 index 3 sqrt mul 6 div} repeat
+		addpoints
+
+		%Gets second third point
+		2 {11 index 2 mul 3 div} repeat
+		2 {9 index} repeat
+		addpoints
+
+		%draw
+		15 index 1 eq
+		{
+		2 {9 index} repeat %x0 y0
+		2 {7 index} repeat %px py
+		18 index 1 sub 1
+		kochinvert
+
+		2 {5 index} repeat
+		2 {5 index} repeat
+		18 index 1 sub 1
+		kochinvert
+
+		2{1 index} repeat
+		2{5 index} repeat
+		18 index 1 sub 1
+		kochinvert
+
+		2{1 index} repeat
+		2{9 index} repeat
+		18 index 1 sub 1
+		kochinvert 
+		}
+		if
+
+		15 index 2 eq
+		{
+		2 {9 index} repeat %x0 y0
+		2 {7 index} repeat %px py
+		18 index 1 sub 2
+		kochinvert
+
+		2 {3 index} repeat
+		2 {7 index} repeat
+		18 index 1 sub 2
+		kochinvert
+
+		2{3 index} repeat
+		2{3 index} repeat
+		18 index 1 sub 2 
+		kochinvert
+
+		2{1 index} repeat
+		2{9 index} repeat
+		18 index 1 sub 2
+		kochinvert
+		}
+		if
+
+
+		15 index 3 eq
+		{
+		2 {5 index} repeat %x0 y0
+		2 {11 index} repeat %px py
+		18 index 1 sub 3 
+		kochinvert
+
+		2 {5 index} repeat
+		2 {5 index} repeat
+		18 index 1 sub 3
+		kochinvert
+
+		2{1 index} repeat
+		2{5 index} repeat
+		18 index 1 sub 3
+		kochinvert
+
+		2{7 index} repeat
+		2{3 index} repeat
+		18 index 1 sub 3 
+		kochinvert
+		}
+		if
+
+		15 index 4 eq
+		{
+		2 {5 index} repeat %x0 y0
+		2 {11 index} repeat %px py
+		18 index 1 sub 4
+		kochinvert
+
+		2 {3 index} repeat
+		2 {7 index} repeat
+		18 index 1 sub 4
+		kochinvert
+
+		2{3 index} repeat
+		2{3 index} repeat
+		18 index 1 sub 4
+		kochinvert
+
+		2{7 index} repeat
+		2{3 index} repeat
+		18 index 1 sub 4
+		kochinvert
+		}
+		if
+
+		16 {pop} repeat
+	} ifelse
+
+} def
+
+ 1 1 1 .9 setcmykcolor /y 0 def 1690{ newpath 0 y moveto 595 y lineto stroke /y y .5 add def} repeat
+
+/poly{
+
+	0 index 
+	/rep exch def
+	360 exch div
+
+	/theta0	exch  def
+	/thetaVar theta0 def
+	/rad exch def
+	/kochnum exch def
+
+	rep 1 eq
+		{
+            /kochinc 1 def
+            4{ 0 rad sub 0 rad 0 kochnum kochinc kochinvert /kochinc kochinc 1 add def} repeat
+		}
+
+	   {rep 
+            {
+	           /kochinc 1 def
+	           /x0 rad thetaVar cos mul floor def
+	           /y0 rad thetaVar sin mul floor def
+
+	           /thetaVar thetaVar theta0 add def
+
+	           /x1 rad thetaVar cos mul floor def
+	           /y1 rad thetaVar sin mul floor def
+
+	           x0 y0 x1 y1 
+
+	           4 {4 {3 index} repeat kochnum kochinc kochinvert /kochinc kochinc 1 add def} repeat
+
+	           } repeat
+	} ifelse
+
+}def
+
+
+
+300 400 translate
+
+%Layers polygons in increasing order MaximumSides{RecursionDepth Radius ...}
+/polyedge 1 def
+%3 {6 280 polyedge poly /polyedge polyedge 1 add def} repeat
+% 10 {3 280 polyedge poly /polyedge polyedge 1 add def} repeat
+% 15 {3 280 polyedge poly /polyedge polyedge 1 add def} repeat
+%  20 {4 280 polyedge poly /polyedge polyedge 1 add def} repeat
+% 100 {1 280 polyedge poly /polyedge polyedge 1 add def} repeat
+
+
+% Takes in argumets here (RecursionDepth Radius SidesOfPolygon)
+5 280 6 poly
+
+
+
+
+
+
+
+
+
+
+
+showpage

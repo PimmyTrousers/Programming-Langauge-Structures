@@ -1,0 +1,33 @@
+%!
+
+72 720 moveto
+
+/Helvetica findfont 16 scalefont setfont
+
+/prnum
+{
+    ( ) show
+    100 string
+    cvs show
+}
+def
+
+
+/prime
+{
+    /n exch def
+    /i 2 def
+ {
+    n i mod 0 eq { exit } if
+    /i 1 i add def
+ } loop
+
+ i n eq prnum
+}
+def
+
+2 prime
+3 prime
+4 prime
+
+showpage

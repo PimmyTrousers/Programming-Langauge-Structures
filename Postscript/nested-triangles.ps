@@ -1,0 +1,70 @@
+/nested_triangles
+% x0 y0 x1 y1 x2 y2 depth nested_triangles
+{
+    /depth exch def
+    /y2 exch def
+    /x2 exch def
+    /y1 exch def
+    /x1 exch def
+    /y0 exch def
+    /x0 exch def
+    x0 y0 x1 y1 x2 y2 triangle
+    depth -1 2
+    {
+        /y2temp y2 y0 mid def
+        /x2temp x2 x0 mid def
+
+        /y1temp y1 y2 mid def
+        /x1temp x1 x2 mid def
+        
+        /y0temp y0 y1 mid def
+        /x0temp x0 x1 mid def
+
+        x0temp y0temp x1temp y1temp x2temp y2temp triangle
+
+        /y2 y2temp def
+        /x2 x2temp def
+
+        /y1 y1temp def
+        /x1 x1temp def
+        
+        /y0 y0temp def
+        /x0 x0temp def
+    } for
+} def
+
+/triangle
+% x0 y0 x1 y1 x2 y2  triangle -
+{
+   newpath
+   moveto
+   lineto
+   lineto
+   closepath
+   stroke
+} def
+
+/mid
+% num1 num2 
+% mid
+{
+   /num1 exch def
+   /num2 exch def
+   num1 num2 add
+   2 div
+} def
+
+/prnum
+{
+  ( ) show
+  100 string % create a string of 20 characters
+  cvs % convert object to string :   object string cvs  =>  string   
+  show
+} def
+
+% x0 y0 x1 y1 x2 y2 depth nested_triangles
+100 200 300 600 500 200 10 nested_triangles
+
+
+% show
+% 100 200 300 400 500 100 triangle

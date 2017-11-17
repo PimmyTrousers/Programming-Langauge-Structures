@@ -1,0 +1,22 @@
+%!
+
+/Helvetica findfont 16 scalefont setfont
+
+72 720 moveto
+
+/prnum
+{
+  ( ) show
+  20 string % create a string of 20 characters
+  cvs % convert object to string :   object string cvs  =>  string   
+  show
+}
+def
+
+
+32.8 prnum
+
+100 2 110 { prnum } for
+
+
+showpage

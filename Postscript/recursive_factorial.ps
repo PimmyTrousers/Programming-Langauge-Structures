@@ -1,0 +1,15 @@
+/rfac
+{
+    dup
+    0 eq
+    {
+        pop
+        1
+    } {
+        dup
+        1 sub
+        rfac
+        mul
+    } ifelse
+} def
+

@@ -1,0 +1,108 @@
+72 720 moveto
+
+/Helvetica findfont 16 scalefont setfont
+
+/dec_to_bin
+{
+    mark % 13 mark
+    exch % mark 13
+    {
+        dup %% mark 13 13 %% mark 1 6 6 %% mark 0 1 3 3 %% mark 1 0 1 1 1
+        2 %% mark 13 13 2 %% mark 1 6 6 2 %% mark 0 1 3 3 2 %% mark 1 0 1 1 1 2
+        mod %% mark 13 1 %% mark 1 6 0 %% mark 0 1 3 1 %% mark 1 0 1 1 1
+        dup %% mark 13 1 1 %% mark 1 6 0 0 %% mark 0 1 3 1 1 %% mark 1 0 1 1 1 1
+        0 eq { %% mark 13 1 false %% mark 1 6 0 true %% mark 0 1 3 1 false %% mark 1 0 1 1 1 false
+            counttomark % mark 1 6 0 3
+            1 roll %% mark 0 1 6
+            2 idiv %% mark 0 1 3
+            dup
+            0 eq {
+                pop
+                exit 
+            } if
+        } {
+            counttomark %% mark 13 1 2 %% mark 0 1 3 1 4 %% mark 1 0 1 1 1 5
+            1 roll %% mark 1 13 %% mark 1 0 1 3 %% mark 1 1 0 1 1
+            2 idiv %% mark 1 6 %% mark 1 0 1 1 %% mark 1 1 0 1 0
+            dup
+            0 eq {
+                %% mark 1 1 0 1 
+                pop
+                exit 
+            } if 
+        } ifelse
+    } loop
+} def
+
+/bin_to_dec3
+{
+    counttomark
+    0 exch -1 1
+    {
+        1 add -1 roll
+        exch 2 mul add
+    } for
+}def 
+
+/nprint
+%  print n items on stack in the order indicated WITHOUT consuming them
+%  a1 a2 ... an    n  nprint
+%  a1 a2 ... an
+{
+  /count_nprint  exch  def
+  
+  count_nprint
+  {
+    count_nprint -1 roll   
+
+    dup  % because we don't want to consume the items we print
+    ( ) show
+    100 string % create a string of 20 characters
+    cvs % convert object to string :   object string cvs  =>  string   
+    show    
+
+  }
+  repeat
+
+}
+def
+
+/prnum
+%  this prints AND consumes the top of the stack
+%  item  prnum
+%  -
+{
+  ( ) show
+  100 string % create a string of 20 characters
+  cvs % convert object to string :   object string cvs  =>  string   
+  show
+}
+def
+
+/dec_to_bin_alt
+% 13
+% mark 1 1 0 1
+{
+    mark % 13 mark
+    exch % mark 13
+    {
+        dup %% mark 13 13 %% mark 1 6 6 %% mark 0 1 3 3 %% mark 1 0 1 1 1
+        2 %% mark 13 13 2 %% mark 1 6 6 2 %% mark 0 1 3 3 2 %% mark 1 0 1 1 1 2
+        mod %% mark 13 1 %% mark 1 6 0 %% mark 0 1 3 1 %% mark 1 0 1 1 1
+        counttomark % mark 1 6 0 3
+        1 roll %% mark 0 1 6
+        2 idiv %% mark 0 1 3
+        dup
+        0 eq {
+            pop
+            exit 
+        } if
+    } loop
+} def
+
+100 dec_to_bin_alt
+counttomark nprint
+
+mark 1 1 0 1 bin_to_dec3
+prnum
+

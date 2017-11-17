@@ -1,0 +1,101 @@
+%!
+
+/triangle
+% x0 y0 x1 y1 x2 y2  triangle -
+{
+   newpath
+   moveto
+   lineto
+   lineto
+   closepath
+   stroke
+} def
+
+
+/fill_triangle
+% x0 y0 x1 y1 x2 y2  fill_triangle -
+{
+   newpath
+   moveto
+   lineto
+   lineto
+   closepath
+   fill
+   stroke
+} def
+
+
+
+/nested_triangles
+% x0 y0 x1 y1 x2 y2  n  nested_triangles  -
+{
+  mark
+  8 1 roll
+  
+  {
+    6 copy
+    triangle
+
+    5 index 4 index add 2 div  % x0'
+    5 index 4 index add 2 div  % y0'
+
+    5 index 4 index add 2 div  % x1'
+    5 index 4 index add 2 div  % y1'    
+
+    9 index 6 index add 2 div  % x2'
+    9 index 6 index add 2 div  % y2'
+
+  } repeat
+
+  cleartomark
+  
+} def
+
+
+100 200  500 250   350 400   5 nested_triangles
+
+
+
+
+/filled_nested_triangles
+% x0 y0 x1 y1 x2 y2  n  filled_nested_triangles  -
+{
+  mark
+  8 1 roll
+
+  1 exch
+  1 exch
+  {
+    %pop
+    2 mod
+    0 eq
+    { 1 1 0 } {0 0 1 } ifelse
+    setrgbcolor
+
+    
+    6 copy
+    fill_triangle
+
+    5 index 4 index add 2 div  % x0'
+    5 index 4 index add 2 div  % y0'
+
+    5 index 4 index add 2 div  % x1'
+    5 index 4 index add 2 div  % y1'    
+
+    9 index 6 index add 2 div  % x2'
+    9 index 6 index add 2 div  % y2'
+
+  } for
+
+  cleartomark
+  
+} def
+
+
+100 400  500 450   350 600   5 filled_nested_triangles
+
+
+
+showpage
+
+

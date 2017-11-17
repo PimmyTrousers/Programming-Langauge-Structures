@@ -1,0 +1,33 @@
+%!
+
+/Helvetica findfont 16 scalefont setfont
+
+72 72 10 mul moveto
+
+/prnum
+{
+    ( ) show
+    100 string 
+    cvs
+    show
+}
+def
+
+/lcm
+{
+    /n 9 def
+    /i 15 def
+    /x 0 def
+    
+    {
+	n i mod 0 eq {exit} if
+	n add
+	/x n n add def
+    } loop
+
+   x prnum
+} def
+
+lcm
+
+showpage

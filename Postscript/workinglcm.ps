@@ -1,0 +1,57 @@
+%!
+
+/Helvetica findfont 16 scalefont setfont
+
+72 72 10 mul moveto
+
+/prnum
+{
+  ( ) show
+  100 string % create a string of 20 characters
+  cvs % convert object to string :   object string cvs  =>  string  
+  show
+}
+def
+
+
+/lcm
+{
+
+1 copy
+3 2 roll
+
+{
+ 2 copy  
+ mod 0 eq { exit } if
+ exch
+ 3 2 roll
+ 1 copy
+ 4 1 roll
+ add
+ exch
+}loop
+
+pop
+exch
+pop
+
+} def
+
+
+9 15 lcm
+prnum
+
+15 9 lcm
+prnum
+
+9 9 lcm
+prnum
+
+2 6 lcm
+prnum
+
+
+showpage
+
+
+%close

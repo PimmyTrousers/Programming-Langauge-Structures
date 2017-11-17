@@ -1,0 +1,55 @@
+72 720 moveto
+
+/Helvetica findfont 16 scalefont setfont
+
+/prnum
+{
+  ( ) show
+  100 string % create a string of 20 characters
+  cvs % convert object to string :   object string cvs  =>  string   
+  show
+}
+def
+
+/pow
+% 2 4 
+% 16
+{ 
+    1 index 
+    exch
+    1 sub
+    {
+        1 index
+        mul
+    } repeat
+    exch
+    pop
+} def
+
+/bin_to_dec2
+{
+    counttomark 0 1 2 div
+    3 -1 roll {
+        2 mul
+        dup 3 1 roll
+        4 2 roll mul
+        3 1 roll exch
+        3 -1 roll
+        add
+        exch
+    }repeat
+    pop exch pop
+} def
+
+/bin_to_dec3
+{
+    counttomark
+    0 exch -1 1
+    {
+        1 add -1 roll
+        exch 2 mul add
+    } for
+}def 
+
+mark 1 1 0 1 bin_to_dec3
+prnum

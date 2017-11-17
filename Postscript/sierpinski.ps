@@ -1,0 +1,87 @@
+/triangle
+% x0 y0 x1 y1 x2 y2  triangle -
+{
+   newpath
+   moveto
+   lineto
+   lineto
+   closepath
+   stroke
+} def
+
+/fill_triangle
+% x0 y0 x1 y1 x2 y2  fill_triangle -
+{
+   newpath
+   moveto
+   lineto
+   lineto
+   closepath
+   fill
+   stroke
+} def
+
+/sierpinski_gasket
+% x0 y0 x1 y1 x2 y2  n  sierpinski_gasket  -
+{
+
+  dup
+  0 gt
+  {
+    7 1 roll  % n x0 y0 x1 y1 x2 y2
+    6 copy    % n x0 y0 x1 y1 x2 y2   x0 y0 x1 y1 x2 y2
+    triangle  % n x0 y0 x1 y1 x2 y2
+    7 -1 roll % x0 y0 x1 y1 x2 y2 n
+
+    % now generate the 3 children :
+
+    6 index  % x0
+    6 index  % y0
+
+    8 index  7 index add 2 div    % (x0 + x1)/2
+    8 index  7 index add 2 div    % (y0 + y1)/2
+
+    10 index  7 index add 2 div   % (x0 + x2)/2
+    10 index  7 index add 2 div   % (y0 + y2)/2
+
+    6 index  1 sub  % (n-1)
+    sierpinski_gasket
+
+    4 index % x1
+    4 index % y1
+
+    8 index  7 index add 2 div   % (x0 + x1)/2
+    8 index  7 index add 2 div   % (y0 + y1)/2
+
+    8 index  7 index add 2 div   % (x1 + x2)/2
+    8 index  7 index add 2 div   % (y1 + y2)/2
+
+    6 index  1 sub  % (n-1)
+    sierpinski_gasket
+
+    2 index % x2
+    2 index % y2
+
+    4 index  7 index add 2 div  % (x2 + x1)/2
+    4 index  7 index add 2 div  % (y2 + y1)/2
+
+    6 index  11 index add 2 div % (x2 + x0)/2 ;
+    6 index  11 index add 2 div % (y2 + y0)/2 ;
+
+    6 index  1 sub  % (n-1)
+    sierpinski_gasket
+
+  } if
+
+  % clean up the stack
+  pop pop pop pop pop pop pop
+
+} def
+
+
+100 200  500 250   350 400   6 sierpinski_gasket
+
+
+
+
+
