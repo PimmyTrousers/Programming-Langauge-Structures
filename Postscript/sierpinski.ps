@@ -9,6 +9,19 @@
    stroke
 } def
 
+/prnum
+%  this prints AND consumes the top of the stack
+%  item  prnum
+%  -
+{
+  ( ) show
+  100 string % create a string of 20 characters
+  cvs % convert object to string :   object string cvs  =>  string   
+  show
+}
+def
+
+
 /fill_triangle
 % x0 y0 x1 y1 x2 y2  fill_triangle -
 {
@@ -21,65 +34,145 @@
    stroke
 } def
 
-/sierpinski_gasket
+/nprint
+%  print n items on stack in the order indicated WITHOUT consuming them
+%  a1 a2 ... an    n  nprint
+%  a1 a2 ... an
+{
+  /count_nprint  exch  def
+  
+  count_nprint
+  {
+    count_nprint -1 roll   
+
+    dup  % because we don't want to consume the items we print
+    ( ) show
+    100 string % create a string of 20 characters
+    cvs % convert object to string :   object string cvs  =>  string   
+    show    
+
+  }
+  repeat
+
+}
+def
+
+/trigram
 % x0 y0 x1 y1 x2 y2  n  sierpinski_gasket  -
 {
 
-  dup
-  0 gt
+  dup % 100 200 500 200 300 700 2 2
+  0 gt % 100 200 500 200 300 700 2 true
   {
-    7 1 roll  % n x0 y0 x1 y1 x2 y2
-    6 copy    % n x0 y0 x1 y1 x2 y2   x0 y0 x1 y1 x2 y2
-    triangle  % n x0 y0 x1 y1 x2 y2
-    7 -1 roll % x0 y0 x1 y1 x2 y2 n
+    dup 1.0 exch div  0.25 0.35 setrgbcolor
+    7 1 roll % 2 100 200 500 200 300 700
+    6 copy % 2 100 200 500 200 300 700 100 200 500 200 300 700
+    fill_triangle  % 2 100 200 500 200 300 700 % change to fill_triangle to work with colors
+    7 -1 roll % 100 200 500 200 300 700 2
 
-    % now generate the 3 children :
+    % Case 1 create the new args for the recursive serpinsky call
+    2 index % 100 200 500 200 300 700 2 300
+    2 index % 100 200 500 200 300 700 2 300 700
 
-    6 index  % x0
-    6 index  % y0
+    4 index % 100 200 500 200 300 700 2 300 700 300
+    7 index % 100 200 500 200 300 700 2 300 700 300 500
+    add     % 100 200 500 200 300 700 2 300 700 800
+    2 div   % 100 200 500 200 300 700 2 300 700 400
+    
+    4 index % 100 200 500 200 300 700 2 300 700 400 700
+    7 index % 100 200 500 200 300 700 2 300 700 400 700 200
+    add     % 100 200 500 200 300 700 2 300 700 400 900
+    2 div   % 100 200 500 200 300 700 2 300 700 400 450
 
-    8 index  7 index add 2 div    % (x0 + x1)/2
-    8 index  7 index add 2 div    % (y0 + y1)/2
+    6 index  % 100 200 500 200 300 700 2 300 700 400 450 300
+    11 index % 100 200 500 200 300 700 2 300 700 400 450 300 100
+    add      % 100 200 500 200 300 700 2 300 700 400 450 400
+    2 div    % 100 200 500 200 300 700 2 300 700 400 450 200
 
-    10 index  7 index add 2 div   % (x0 + x2)/2
-    10 index  7 index add 2 div   % (y0 + y2)/2
+    6 index  % 100 200 500 200 300 700 2 300 700 400 450 200 700
+    11 index % 100 200 500 200 300 700 2 300 700 400 450 200 700 200
+    add      % 100 200 500 200 300 700 2 300 700 400 450 200 900
+    2 div    % 100 200 500 200 300 700 2 300 700 400 450 200 450
 
-    6 index  1 sub  % (n-1)
-    sierpinski_gasket
+    6 index  % 100 200 500 200 300 700 2 300 700 400 450 200 450 2
+    1 sub    % 100 200 500 200 300 700 2 300 700 400 450 200 450 1
+    trigram  % 100 200 500 200 300 700 2
 
-    4 index % x1
-    4 index % y1
 
-    8 index  7 index add 2 div   % (x0 + x1)/2
-    8 index  7 index add 2 div   % (y0 + y1)/2
+    % Case 2 create the new args for the recursive serpinsky call
+    4 index % 100 200 500 200 300 700 2 500
+    4 index % 100 200 500 200 300 700 2 500 200
 
-    8 index  7 index add 2 div   % (x1 + x2)/2
-    8 index  7 index add 2 div   % (y1 + y2)/2
+    8 index % 100 200 500 200 300 700 2 500 200 100
+    7 index % 100 200 500 200 300 700 2 500 200 100 500
+    add     % 100 200 500 200 300 700 2 500 200 600
+    2 div   % 100 200 500 200 300 700 2 500 200 300
+    
+    8 index % 100 200 500 200 300 700 2 500 200 300 200 
+    7 index % 100 200 500 200 300 700 2 500 200 300 200 200
+    add     % 100 200 500 200 300 700 2 500 200 300 400
+    2 div   % 100 200 500 200 300 700 2 500 200 300 200
 
-    6 index  1 sub  % (n-1)
-    sierpinski_gasket
+    8 index  % 100 200 500 200 300 700 2 500 200 300 200 500
+    7 index  % 100 200 500 200 300 700 2 500 200 300 200 500 300
+    add      % 100 200 500 200 300 700 2 500 200 300 200 800
+    2 div    % 100 200 500 200 300 700 2 500 200 300 200 400
 
-    2 index % x2
-    2 index % y2
+    8 index  % 100 200 500 200 300 700 2 500 200 300 200 400 200
+    7 index  % 100 200 500 200 300 700 2 500 200 300 200 400 200 700
+    add      % 100 200 500 200 300 700 2 500 200 300 200 400 900
+    2 div    % 100 200 500 200 300 700 2 500 200 300 200 400 450
 
-    4 index  7 index add 2 div  % (x2 + x1)/2
-    4 index  7 index add 2 div  % (y2 + y1)/2
+    6 index  % 100 200 500 200 300 700 2 500 200 300 200 400 450 2
+    1 sub    % 100 200 500 200 300 700 2 500 200 300 200 400 450 1 
+    trigram  % 100 200 500 200 300 700 2
 
-    6 index  11 index add 2 div % (x2 + x0)/2 ;
-    6 index  11 index add 2 div % (y2 + y0)/2 ;
+    % Case 3 create the new args for the recursive serpinsky call
+    6 index  % 100 200 500 200 300 700 2 100
+    6 index  % 100 200 500 200 300 700 2 100 200
 
-    6 index  1 sub  % (n-1)
-    sierpinski_gasket
+    8 index  % 100 200 500 200 300 700 2 100 200 100
+    7 index  % 100 200 500 200 300 700 2 100 200 100 500
+    add      % 100 200 500 200 300 700 2 100 200 600
+    2 div    % 100 200 500 200 300 700 2 100 200 300.0
+
+    8 index % 100 200 500 200 300 700 2 100 200 300.0 200 
+    7 index % 100 200 500 200 300 700 2 100 200 300.0 200 200
+    add     % 100 200 500 200 300 700 2 100 200 300.0 400
+    2 div   % 100 200 500 200 300 700 2 100 200 300.0 200.0
+
+    10 index % 100 200 500 200 300 700 2 100 200 300.0 200.0 100
+    7 index  % 100 200 500 200 300 700 2 100 200 300.0 200.0 100 300
+    add      % 100 200 500 200 300 700 2 100 200 300.0 200.0 400
+    2 div    % 100 200 500 200 300 700 2 100 200 300.0 200.0 200.0
+    
+    10 index % 100 200 500 200 300 700 2 100 200 300.0 200.0 200.0 200
+    7 index  % 100 200 500 200 300 700 2 100 200 300.0 200.0 200.0 200 700
+    add      % 100 200 500 200 300 700 2 100 200 300.0 200.0 200.0 200
+    2 div    % 100 200 500 200 300 700 2 100 200 300.0 200.0 200.0 450.0
+
+    6 index    % 100 200 500 200 300 700 2 100 200 300.0 200.0 200.0 450.0 2
+    1 sub      % 100 200 500 200 300 700 2 100 200 300.0 200.0 200.0 450.0 1
+    trigram    % 100 200 500 200 300 700 2 
+    % Case 2
 
   } if
 
   % clean up the stack
-  pop pop pop pop pop pop pop
+  pop % 100 200 500 200 300 700 
+  pop % 100 200 500 200 300
+  pop % 100 200 500 200
+  pop % 100 200 500
+  pop % 100 200
+  pop % 100 
+  pop % 
 
 } def
 
 
-100 200  500 250   350 400   6 sierpinski_gasket
+100 200 500 200 300 700 6 trigram
+
+showpage
 
 
 
