@@ -29,6 +29,7 @@ double interpret_the_scheme(char* equation);                                    
 void spacify_the_equation(char spacified_equation[100], char input_equation[100]);      // evens the spaces so that the computer can easily interpret
 void add_null_terminator(char* equation);
 int validate_token(char* token);                                             // adds a null terminator at the end of the scheme so that no funny business happens
+void change_words_to_symbols(char* equation);
 
 void push(struct stack *s, double elem);                                                // STACK OP to push items
 double pop(struct stack *s);                                                            // STACK OP to pop items
@@ -182,23 +183,14 @@ double interpret_the_scheme(char* equation){
         clear_array(temp, 100);
         double result = 0;
         remove_all_chars(equation, '\n');
+        change_words_to_symbols(equation);
         spacify_the_equation(spacified_equation, equation);
         add_null_terminator(spacified_equation);
-
-        char s[256];
-        // strcpy(s, spacified_equation);
-        // char* token = strtok(s, " ");
-        // int validate_test = validate_token(token);
-        // printf("result of validation test is %d", validate_test);
-        // if (validate_test == 1) {
-        //         exit(0);
-        // }
-
-        //printf("new equation \"%s\"\n", spacified_equation);
+        printf("new equation \"%s\"\n", spacified_equation);
 
         for(int i = 0; spacified_equation[i] != '\0'; ++i) {
-                if(spacified_equation[i] == '+' || spacified_equation[i] == '-' || spacified_equation[i] == '*' || spacified_equation[i] == '/' || spacified_equation[i] == '^') {
-                        if(spacified_equation[i+3] == '+' || spacified_equation[i+3] == '-' || spacified_equation[i+3] == '*' || spacified_equation[i+3] == '/' || spacified_equation[i+3] == '^') {
+                if(spacified_equation[i] == '+' || spacified_equation[i] == '-' || spacified_equation[i] == '*' || spacified_equation[i] == '/' || spacified_equation[i] == '^' || spacified_equation[i] == 'c' || spacified_equation[i] == 's' || spacified_equation[i] == 'q') {
+                        if(spacified_equation[i+3] == '+' || spacified_equation[i+3] == '-' || spacified_equation[i+3] == '*' || spacified_equation[i+3] == '/' || spacified_equation[i+3] == '^' || spacified_equation[i+3] == 'c' || spacified_equation[i+3] == 's' || spacified_equation[i+3] == 'q') {
                                 return 57.007;
                         }
                         else {
@@ -215,16 +207,6 @@ double interpret_the_scheme(char* equation){
                         temp[i] = '\0';
                         push(&num_stack, atof(temp));
                         clear_array(temp, 100);
-                }
-                if(spacified_equation[i] == 's' && spacified_equation[i+1] == 'i' && spacified_equation[i+2] == 'n') {
-                        push(&op_stack, 's');
-                }
-
-                if(spacified_equation[i] == 'c' && spacified_equation[i+1] == 'o' && spacified_equation[i+2] == 's') {
-                        push(&op_stack, 'c');
-                }
-                if(spacified_equation[i] == 's' && spacified_equation[i+1] == 'q' && spacified_equation[i+2] == 'r' && spacified_equation[i+3] == 't') {
-                        push(&op_stack, 'q');
                 }
 
         }
@@ -454,4 +436,22 @@ int validate_token(char* token){
                 token = strtok(NULL, " ");
         }
         return 0;
+}
+
+void change_words_to_symbols(char* spacified_equation){
+        for(int i = 0; spacified_equation[i] != 0; i++){
+                if(spacified_equation[i] == 's' && spacified_equation[i+1] == 'i' && spacified_equation[i+2] == 'n') {
+                        spacified_equation[i+1] = ' ';
+                        spacified_equation[i+2] = ' ';
+                }
+                if(spacified_equation[i] == 'c' && spacified_equation[i+1] == 'o' && spacified_equation[i+2] == 's') {
+                        spacified_equation[i+1] = ' ';
+                        spacified_equation[i+2] = ' ';
+                }
+                if(spacified_equation[i] == 's' && spacified_equation[i+1] == 'q' && spacified_equation[i+2] == 'r' && spacified_equation[i+3] == 't') {
+                        spacified_equation[i] = ' ';
+                        spacified_equation[i+2] = ' ';
+                        spacified_equation[i+3] = ' ';
+                }
+        }
 }
