@@ -9,7 +9,7 @@
 #include <math.h>
 #include <string.h>
 
-#define MAXSIZE 10                                                                      // definition for the max size of the stack
+#define MAXSIZE 30                                                                      // definition for the max size of the stack
 
 struct stack                                                                            // definition of stack struct
 {
@@ -30,6 +30,7 @@ void spacify_the_equation(char spacified_equation[100], char input_equation[100]
 void add_null_terminator(char* equation);
 int validate_token(char* token);                                             // adds a null terminator at the end of the scheme so that no funny business happens
 void change_words_to_symbols(char* equation);
+int validate_equation(char* equation);
 
 void push(struct stack *s, double elem);                                                // STACK OP to push items
 double pop(struct stack *s);                                                            // STACK OP to pop items
@@ -188,30 +189,43 @@ double interpret_the_scheme(char* equation){
         add_null_terminator(spacified_equation);
         printf("new equation \"%s\"\n", spacified_equation);
 
+        char s[256];
+        strcpy(s, spacified_equation);
+        char* token = strtok(s, " ");
+        //validate_token(token);
+
         for(int i = 0; spacified_equation[i] != '\0'; ++i) {
-                if(spacified_equation[i] == '+' || spacified_equation[i] == '-' || spacified_equation[i] == '*' || spacified_equation[i] == '/' || spacified_equation[i] == '^' || spacified_equation[i] == 'c' || spacified_equation[i] == 's' || spacified_equation[i] == 'q') {
-                        if(spacified_equation[i+3] == '+' || spacified_equation[i+3] == '-' || spacified_equation[i+3] == '*' || spacified_equation[i+3] == '/' || spacified_equation[i+3] == '^' || spacified_equation[i+3] == 'c' || spacified_equation[i+3] == 's' || spacified_equation[i+3] == 'q') {
+                if(spacified_equation[i] == '+' || spacified_equation[i] == '-' || spacified_equation[i] == '*' || spacified_equation[i] == '/' || spacified_equation[i] == '^' || spacified_equation[i] == 'c' || spacified_equation[i] == 's' || spacified_equation[i] == 'q' || spacified_equation[i] == 'r') {
+                        if(spacified_equation[i+3] == '+' || spacified_equation[i+3] == '-' || spacified_equation[i+3] == '*' || spacified_equation[i+3] == '/' || spacified_equation[i+3] == '^' || spacified_equation[i+3] == 'c' || spacified_equation[i+3] == 's' || spacified_equation[i+3] == 'q' || spacified_equation[i+3] == 'r') {
                                 return 57.007;
                         }
                         else {
-                                push(&op_stack, spacified_equation[i]);
+                                if (spacified_equation[i] == '-' && (spacified_equation[i+1] > 47 && spacified_equation[i+1] < 58)) {
+                                        push(&num_stack, -1*(atof(&spacified_equation[i+1])));
+                                }else{
+                                        push(&op_stack, spacified_equation[i]);
+                                }
+
                         }
 
                 }
-                if((spacified_equation[i] > 47 && spacified_equation[i] < 58) || spacified_equation[i] == '.') {
+                if((spacified_equation[i] > 47 && spacified_equation[i] < 58) || spacified_equation[i] == '.' || spacified_equation[i] == '-') {
                         int holder = i;
                         while(spacified_equation[i] != ' ') {
                                 temp[i-holder] = spacified_equation[i];
                                 i++;
                         }
                         temp[i] = '\0';
-                        push(&num_stack, atof(temp));
-                        clear_array(temp, 100);
+                        if(temp[0] != '-') {
+                                push(&num_stack, atof(temp));
+                                clear_array(temp, 100);
+                        }
+
                 }
 
         }
-        //display_char(&op_stack);
-        //display_num(&num_stack);
+        display_char(&op_stack);
+        display_num(&num_stack);
         while(op_stack.top != -1) {
                 char operator = pop(&op_stack);
 
@@ -228,12 +242,12 @@ double interpret_the_scheme(char* equation){
                 if(operator == '/') {
                         double temp1 = pop(&num_stack);
                         double temp2 = pop(&num_stack);
-                        push(&num_stack, temp2/temp1);
+                        push(&num_stack, temp1/temp2);
                 }
                 if(operator == '-') {
                         double temp1 = pop(&num_stack);
                         double temp2 = pop(&num_stack);
-                        push(&num_stack, temp1-temp2);
+                        push(&num_stack, temp2-temp1);
                 }
                 if(operator == '^') {
                         double temp1 = pop(&num_stack);
@@ -252,8 +266,14 @@ double interpret_the_scheme(char* equation){
                         double temp1 = pop(&num_stack);
                         push(&num_stack, sqrt(temp1));
                 }
-
+                if(operator == 'r') {
+                        double temp1 = pop(&num_stack);
+                        push(&num_stack, temp1*temp1);
+                }
+                display_char(&op_stack);
+                display_num(&num_stack);
         }
+
         result = pop(&num_stack);
         return result;
 }
@@ -305,7 +325,7 @@ void display_char(struct stack *s){
         }
         else
         {
-                printf ("\n The status of the stack is \n");
+                printf ("\n The status of the character stack is \n");
                 for (i = s->top; i >= 0; i--)
                 {
                         printf ("\"%c\"\n", (char)s->stk[i]);
@@ -326,7 +346,7 @@ void display_num(struct stack *s){
         }
         else
         {
-                printf ("\n The status of the stack is \n");
+                printf ("\n The status of the number stack is \n");
                 for (i = s->top; i >= 0; i--)
                 {
                         printf ("%lf\n", s->stk[i]);
@@ -352,13 +372,15 @@ void spacify_the_equation(char spacified_equation[100], char input_equation[100]
 
                 }
                 if(input_equation[i] == '-') {
-                        spacified_equation[count] = ' ';
-                        count++;
-                        spacified_equation[count] = '-';
-                        count++;
-                        spacified_equation[count] = ' ';
-                        count++;
-                        flag = 1;
+                        if(!(input_equation[i+1] > 47 && input_equation[i+1] < 58)) {
+                                spacified_equation[count] = ' ';
+                                count++;
+                                spacified_equation[count] = '-';
+                                count++;
+                                spacified_equation[count] = ' ';
+                                count++;
+                                flag = 1;
+                        }
                 }
                 if(input_equation[i] == '/') {
                         spacified_equation[count] = ' ';
@@ -428,18 +450,41 @@ void add_null_terminator(char* equation){
 }
 
 int validate_token(char* token){
-        while(token) {
-                if(!(strcmp("+",token)) && !(strcmp("-",token)) && !(strcmp("/",token)) && !(strcmp("*",token)) && !(strcmp("(",token)) && !(strcmp(")",token)) && !(strcmp("sqrt",token)) && !(strcmp("cos",token)) && !(strcmp("sin",token)) && !(strcmp("^",token))) {
-                        return 1;
-                }
-                printf("token: %s\n", token);
-                token = strtok(NULL, " ");
+        int i= 0;
+        char *token_array[100];
+        while (token != NULL) {
+                token_array[i++] = token;
+                token = strtok (NULL, " ");
         }
+        for(i = 0; i != 100; i++) {
+                if(*token_array[i] != '+' && *token_array[i] != '-' && *token_array[i] != '*' && *token_array[i] != '/' && *token_array[i] != 's' && *token_array[i] != 'c' && *token_array[i] != 'q' && *token_array[i] != 'r' && *token_array[i] != '(' && *token_array[i] != ')') {
+                        printf("i was hit");
+                }
+
+        }
+        // while(token) {
+        //         if(*token != '+' && *token != '-' && *token != '*' && *token != '/' && *token != 's' && *token != 'c' && *token != 'q' && *token != 'r' && *token != '(' && *token != ')') {
+        //                 if(atof(token) < 0 && atof(token) > 100) {
+        //                         printf("Was i hit");
+        //                         return 1;
+        //                 }
+        //         }
+        //         printf("token: %s\n", token);
+        //
+        //         if(*token == '+' || *token == '-' || *token == '*' || *token == '/') {
+        //                 printf("%f %f", atof((token+2)), atof(token+3));
+        //                 if((atof((token+2)) > 0 && atof((token+2)) < 100) && (atof((token+3)) > 0 && atof((token+3)) < 100)) {
+        //                         printf("valid");
+        //                 }
+        //         }
+        //
+        //         token = strtok(NULL, " ");
+        // }
         return 0;
 }
 
 void change_words_to_symbols(char* spacified_equation){
-        for(int i = 0; spacified_equation[i] != 0; i++){
+        for(int i = 0; spacified_equation[i] != 0; i++) {
                 if(spacified_equation[i] == 's' && spacified_equation[i+1] == 'i' && spacified_equation[i+2] == 'n') {
                         spacified_equation[i+1] = ' ';
                         spacified_equation[i+2] = ' ';
@@ -452,6 +497,13 @@ void change_words_to_symbols(char* spacified_equation){
                         spacified_equation[i] = ' ';
                         spacified_equation[i+2] = ' ';
                         spacified_equation[i+3] = ' ';
+                }
+                if(spacified_equation[i] == 's' && spacified_equation[i+1] == 'q' && spacified_equation[i+2] == 'u' && spacified_equation[i+3] == 'a' && spacified_equation[i+4] == 'r' && spacified_equation[i+5] == 'e') {
+                        spacified_equation[i] = ' ';
+                        spacified_equation[i+1] = ' ';
+                        spacified_equation[i+2] = ' ';
+                        spacified_equation[i+3] = ' ';
+                        spacified_equation[i+5] = ' ';
                 }
         }
 }
