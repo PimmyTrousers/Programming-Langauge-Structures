@@ -1,13 +1,14 @@
-(define (pi_work answer n)
-  (cond
-    ((= n -1) answer)
-    (else (pi_work (/ (* n n) (+ 2 answer)) (- n 2) ) )
-  )
+(define (pi n i upper mult)
+(cond
+((= n i) (/ 2 mult))
+(else
+ (pi n (+ i 1) (sqrt (+ 2 upper)) (* mult (/ (sqrt (+ 2 upper)) 2)) ) )
+
+)
 )
 
-(define (pi n)
-  (/ 4 (+ 1 (pi_work -1 n)))
-)
-
-(pi 5.0)
-c
+(pi 1 0 0 1) 
+(pi 2 0 0 1)
+(pi 3 0 0 1)
+(pi 4 0 0 1)
+(pi 5 0 0 1)

@@ -1,0 +1,17 @@
+
+
+1 0 1 1 0 1
+
+    1 index 2 mul add
+    exch pop
+    1 index 4 mul add
+    exch pop
+    1 index 8 mul add
+    exch pop
+    1 index 16 mul add
+    exch pop
+    1 index 32 mul add
+    exch pop    
+    
+pstack
+

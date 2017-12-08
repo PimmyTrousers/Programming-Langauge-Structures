@@ -1,0 +1,52 @@
+
+
+90.2  80.72  100.8  150.247
+
+4 copy
+add
+add
+add
+4 
+div
+
+4 index
+1 index
+sub
+dup
+mul
+
+4 index
+2 index
+sub
+dup
+mul
+
+4 index
+3 index
+sub
+dup
+mul
+
+4 index
+4 index
+sub
+dup
+mul
+
+add
+add
+add
+3
+div
+sqrt
+
+6 2 roll
+pop
+pop
+pop
+pop
+
+pstack
+
+
+
