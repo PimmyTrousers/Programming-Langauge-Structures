@@ -96,7 +96,7 @@
       )
 
       ((sub? expr)
-             (make-sub  (math_is_dumb (subtrahend expr) var)
+            (make-sub  (math_is_dumb (subtrahend expr) var)
 			(math_is_dumb (minuend    expr) var)
 	     )
       )
@@ -112,7 +112,7 @@
       )
 
       ((quotient? expr)
-             (make-quotient
+            (make-quotient
 	            (make-sub
                           (make-product  (divisor   expr)
                                    (math_is_dumb  (dividend expr) var)
@@ -132,7 +132,7 @@
       ((sin? expr) (make-product (make-sin (first expr)) (math_is_dumb (first expr) var)))
       ((cos? expr) (make-product (make-cos (first expr)) (math_is_dumb (first expr) var)))
 
-      (else 'wtf)
+      (else 'Something_went_wrong)
   )
 )
 
@@ -141,6 +141,8 @@
 
 (math_is_dumb '(+ x 3) 'x)
 (math_is_dumb '(* x y) 'x)
+(math_is_dumb 'x 'x)
+(math_is_dumb '(* x x) 'x)
 (math_is_dumb '(* (* x y) (+ x 3))  'x)
 (math_is_dumb '(* (* x x) (+ x 3))  'x)
 
@@ -150,3 +152,20 @@
 (math_is_dumb '(cos x) 'x)
 (math_is_dumb '(log x) 'x)
 (math_is_dumb '(log (cos x)) 'x)
+
+(define x 3)
+
+(define expression1 (math_is_dumb '(log (* x x))   'x))
+(eval expression1  user-initial-environment) ; the environment has x defined as 3
+
+(define expression2 (math_is_dumb '(/ (cos (* x x)) (+ x 1))   'x) )
+(eval expression2  user-initial-environment) ; the environment has x defined as 3
+
+(define expression3 (math_is_dumb '(exp  (/ (sin (* x x)) (+ x 1)))   'x) )
+(eval expression3  user-initial-environment) ; the environment has x defined as 3
+
+
+(define x 5)
+(define expression4 (math_is_dumb  (math_is_dumb '(log (* x x))   'x) 'x)  )
+expression4
+(eval expression4  user-initial-environment) ; the environment has x defined as 5
