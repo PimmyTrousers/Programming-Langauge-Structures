@@ -2,60 +2,9 @@
 #include <stdlib.h>
 #include <math.h>
 
-double term(char op[][50]);
-double factor(char op[][50]);
-double expression(char op[][50]);
-int isnum(char *w);
-
-int isnum(char *w)
-{
-    char *str = w;
-    int span = strspn(w, "0123456789.-");
-    if (str[span] == '\0')
-    {
-        return 1;
-    }
-    return 0;
-}
-
-double term(char op[][50])
-{
-    if (op[1][0] == 0)
-    {
-        return convert_num(op[1]);
-    }
-}
-
-double factor(char op[][50])
-{
-    if (op[1][0] == 0)
-    {
-        return convert_num(op[1]);
-    }
-}
-
-double expression(char op[][50])
-{
-    double result = 0;
-    if (op[1][0] == 0)
-    {
-        return convert_num(op[1]);
-    }
-    for (int i = 0; op[i][0] != 0; i++)
-    {
-        if(isnum(op[i])){
-            result += convert_num(op[i]);
-        }
-        if(strcmp(op[i], "*") == 1){
-            result += term(op[i-1]);
-        }
-    }
-}
-
 void error_out(char *clue)
 {
-    printf("error: invalid entry... ");
-    printf("%s\n", clue);
+    printf("ERRORRRRRR\n");
     exit(0);
 }
 
@@ -99,6 +48,14 @@ double convert_num(char *num)
     return number * neg_flag;
 }
 
+int end_expression(char c)
+{
+    return c == ')' || c == 0;
+}
+int end_term(char c)
+{
+    return c == '+' || c == '-' || c == ')' || c == 0;
+}
 int not_syn(char c)
 {
     return c != ')' && c != '(' && c != ' ';
@@ -115,6 +72,15 @@ int end(char *s)
 {
     return s[0] == ')' || s[0] <= 0;
 }
+int openp(char *s)
+{
+    return s[0] == '(';
+}
+int closep(char *s)
+{
+    return s[0] == ')';
+}
+
 int sub(char *operand)
 {
     return operand[0] == '-' && operand[1] < 1;
@@ -131,6 +97,14 @@ int mul(char *operand)
 {
     return operand[0] == '*' && operand[1] < 1;
 }
+int is_op(char *s)
+{
+    return sub(s) || add(s) || isdiv(s) || mul(s);
+}
+int isop(char c)
+{
+    return c == '+' || c == '-' || c == '*' || c == '/';
+};
 
 void copy(char *to, char *from)
 {
@@ -142,19 +116,6 @@ void copy(char *to, char *from)
             break;
         i++;
     }
-}
-
-char pop(char op[][50])
-{
-    int i;
-    char c = op[0][0];
-    for (i = 0; 1; i++)
-    {
-        copy(op[i], op[i + 1]);
-        if (op[i][0] < 1)
-            break;
-    }
-    return c;
 }
 
 void printop(char op[][50])
@@ -169,7 +130,7 @@ void printop(char op[][50])
     printf("\n");
 }
 
-void read(char *filename, char op[50000][50])
+int read(char *filename, char op[50000][50])
 {
     char c;
     int i = 0, j;
@@ -185,7 +146,7 @@ void read(char *filename, char op[50000][50])
         if (c == EOF)
             break;
 
-        if (paren(c))
+        if (paren(c) || isop(c))
         {
             op[i][0] = c;
             op[i][1] = 0;
@@ -196,7 +157,7 @@ void read(char *filename, char op[50000][50])
             while (1)
             {
                 op[i][j] = c;
-                if (paren(c))
+                if (paren(c) || isop(c))
                 {
                     op[i][j] = 0;
                     i++;
@@ -217,14 +178,124 @@ void read(char *filename, char op[50000][50])
         }
         i++;
     }
-    op[i][0] = 0;
+    return i;
+}
+
+int prec(char *a, char *b)
+{
+    int an, bn;
+    if (add(a) || sub(a))
+        an = 2;
+    else if (mul(a) || isdiv(a))
+        an = 3;
+
+    if (add(b) || sub(b))
+        bn = 2;
+    else if (mul(b) || isdiv(b))
+        bn = 3;
+
+    if (openp(a) || openp(b))
+        return 0;
+    if (an == bn || an > bn)
+        return 1;
+    return 0;
+}
+
+double do_op(double a, char *op, double b)
+{
+    if (add(op))
+        return a + b;
+    if (sub(op))
+        return a - b;
+    if (mul(op))
+        return a * b;
+    if (isdiv(op))
+    {
+        if (b == 0)
+            error_out("no division by zero");
+        return a / b;
+    }
+}
+
+double expression(char op[5000][50], int l)
+{
+    double operand[2500];
+    char operator[2500][50];
+    int i,
+        sn = -1, //counter for operands
+        st = -1; //counter for operators
+    for (i = 0; i < l; i++)
+    {
+        if (openp(op[i]))
+        {
+            st++;
+            operator[st][0] = '(';
+        }
+        else if (is_op(op[i]))
+        {
+            if (st < 0)
+            {
+                st++;
+                copy(operator[st], op[i]);
+            }
+            else
+            {
+
+                while (!openp(operator[st]) && prec(operator[st], op[i]))
+                {
+                    if (sn < 1)
+                        error_out("operand stack underflow");
+                    operand[sn - 1] = do_op(operand[sn - 1],
+                                            operator[st],
+                                            operand[sn]);
+                    sn--;
+                    st--;
+                }
+                st++;
+                copy(operator[st], op[i]);
+            }
+        }
+        else if (closep(op[i]))
+        {
+            while (!openp(operator[st]))
+            {
+                if (st < 0)
+                    error_out("mismatched parens");
+                if (sn < 1)
+                    error_out("operand stack underflow");
+                operand[sn - 1] = do_op(operand[sn - 1],
+                                        operator[st],
+                                        operand[sn]);
+                sn--;
+                st--;
+            }
+            st--;
+        }
+        else
+        {
+            sn++;
+            operand[sn] = convert_num(op[i]);
+        }
+    }
+    for (st = st; st >= 0; st--)
+    {
+        if (sn < 1)
+            error_out("operand stack underflow");
+        if (paren(operator[st][0]))
+            error_out("mismatched parens");
+        operand[sn - 1] = do_op(operand[sn - 1],
+                                operator[st],
+                                operand[sn]);
+        sn--;
+    }
+    return operand[0];
 }
 
 int main(int argc, char **argv)
 {
     argc--;
     char op[5000][50];
-    int i;
+    int i, l;
     char filename[20];
     if (argc == 0)
     {
@@ -233,9 +304,13 @@ int main(int argc, char **argv)
         argv[1] = filename;
         argc++;
     }
+
+    double ans[2];
+
     for (i = 0; i < argc; i++)
     {
-        read(argv[i + 1], op);
-        printf("%s: %lf\n", argv[i + 1], solve(op));
+        l = read(argv[i + 1], op);
+        printop(op);
+        printf("%lf\n", expression(op, l));
     }
 }
