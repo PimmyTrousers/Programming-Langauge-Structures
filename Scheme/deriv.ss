@@ -136,23 +136,6 @@
   )
 )
 
-
-
-
-(math_is_dumb '(+ x 3) 'x)
-(math_is_dumb '(* x y) 'x)
-(math_is_dumb 'x 'x)
-(math_is_dumb '(* x x) 'x)
-(math_is_dumb '(* (* x y) (+ x 3))  'x)
-(math_is_dumb '(* (* x x) (+ x 3))  'x)
-
-
-(math_is_dumb '(/ 1 x) 'x)
-(math_is_dumb '(exp (* x x)) 'x)
-(math_is_dumb '(cos x) 'x)
-(math_is_dumb '(log x) 'x)
-(math_is_dumb '(log (cos x)) 'x)
-
 (define x 3)
 
 (define expression1 (math_is_dumb '(log (* x x))   'x))

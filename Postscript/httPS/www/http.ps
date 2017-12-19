@@ -1,0 +1,191 @@
+/extensiondict 29 dict def
+extensiondict begin
+    /jpg  (Content-type: image/jpeg\n) def
+    /jpeg (Content-type: image/jpeg\n) def
+    /gif  (Content-type: image/gif\n) def
+    /png  (Content-type: image/png\n) def
+    /tif  (Content-type: image/tiff\n) def
+    /tiff (Content-type: image/tiff\n) def
+    /css  (Content-type: text/css\n) def
+    /ps   (Content-type: application/postscript\n) def
+    /pdf  (Content-type: application/pdf\n) def
+    /eps  (Content-type: application/postscript\n) def
+    /tar  (Content-type: application/x-tar\n) def
+    /gz   (Content-type: application/x-tar\n) def
+    /tgz  (Content-type: application/x-tar\n) def
+    /rpm  (Content-type: application/x-rpm\n) def
+    /zip  (Content-type: application/zip\n) def
+    /mp3  (Content-type: audio/mpeg\n) def
+    /mp2  (Content-type: audio/mpeg\n) def
+    /mid  (Content-type: audio/midi\n) def
+    /midi (Content-type: audio/midi\n) def
+    /wav  (Content-type: audio/x-wav\n) def
+    /au   (Content-type: audio/basic\n) def
+    /ram  (Content-type: audio/x-pn-realaudio\n) def
+    /ra   (Content-type: audio/x-realaudio\n) def
+    /mpg  (Content-type: video/mpeg\n) def
+    /mpeg (Content-type: video/mpeg\n) def
+    /qt   (Content-type: video/quicktime\n) def
+    /mov  (Content-type: video/quicktime\n) def
+    /avi  (Content-type: video/x-msvideo\n) def
+end
+
+
+/concatstr
+{
+    exch dup length 2 index length add string
+    dup dup 4 2 roll copy length 4 -1 roll putinterval
+} bind def
+
+
+
+%%% STEP 4
+/get_file
+{
+    {
+        infile input_buffer readstring
+        { 
+            (%stdout) (w) file exch (\n) concatstr writestring 
+        }
+        { 
+            (%stdout) (w) file exch (\n) concatstr writestring infile closefile exit 
+        } ifelse
+
+    } bind loop
+    flush
+} bind def
+
+/get_extension
+{
+    dup
+    { % loop
+        (.) search
+        { 
+            pop
+            pop 
+        }
+        { 
+            exit 
+        } ifelse
+    } loop
+    exch 1 index ne
+
+} bind def
+
+
+/print_header
+{
+    (%stdout) (w) file persistent {(\nHTTP/1.1 200 OK\n)} {(\nHTTP/1.0 200 OK\n)} ifelse writestring
+    (%stdout) (w) file (MIME-Version: 1.0\n) writestring
+    (%stdout) (w) file (Server: httPS/1.6\n) writestring
+    (%stdout) (w) file (Content-Length: ) writestring
+    (%stdout) (w) file exch 16 string cvs writestring
+    (%stdout) (w) file (\n)  writestring
+
+    get_extension
+    {
+        dup extensiondict exch known
+        { 
+            extensiondict exch get stdout exch writestring
+        }
+        { 
+            pop (%stdout) (w) file (Content-type: text/html\n) writestring 
+        } ifelse
+    }
+    {
+        pop (%stdout) (w) file (Content-type: text/plain\n) writestring
+    } ifelse
+
+    (%stdout) (w) file (\n)  writestring
+} bind def
+
+%%% STEP 1
+/command_read
+{
+    /stdin (%stdin) (r) file def
+    4096 string
+    {
+        % read lines until empty line
+        stdin 1024 string readline pop
+        dup () eq { pop exit  } { concatstr } ifelse
+    } loop
+
+    /command exch def 
+} bind def
+
+%%% STEP 2
+% check for persistence
+/check_persistence
+{ 
+    % Check if we should do HTTP 1.1 persistent connections
+    command (HTTP/1.1) search
+    {
+        pop pop pop
+        command (Connection: close) search     % Check for Connection: close
+        { pop pop pop  /persistent false def }
+        { pop          /persistent true def  } ifelse
+    }
+    { pop /persistent false def } ifelse
+} bind def
+
+%%% STEP 3
+% Parse the HTTP-command read from user
+/respond
+{ 
+    command token
+    {
+        (GET) eq
+        {
+
+            ( ) search
+            {
+                exch pop exch pop
+                root exch concatstr            % build path
+                /filename exch def             % define filename and clean stack
+
+                filename filename length 1 sub 1 getinterval (/) eq
+                 
+
+                { filename (index.html) concatstr  
+                    /filename exch def 
+                } if
+
+                filename (..) search 
+                { stdout err_400 quit } if pop
+
+                /infile filename (r) file def
+                
+                filename infile bytesavailable print_header
+                get_file
+            } if
+        } if
+    } if
+} bind def
+
+
+% Error messages
+/err_400 (400 Bad Request.\n\n) def
+/err_404 (404 Page not found.\n\n) def
+
+errordict begin
+/handleerror { stdout err_400 writestring quit } bind def 
+end
+
+/root (/home/parallels/Desktop/httPS/www) def
+
+/input_buffer 20000 string def
+
+
+/stdout (%stdout) (w) file def
+/command () def   
+
+% DO THE WORK LOOP
+{
+    command_read
+    check_persistence
+    respond
+
+    persistent not { exit } if % If persistent exit
+} loop
+
+quit

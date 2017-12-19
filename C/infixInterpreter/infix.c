@@ -2,6 +2,57 @@
 #include <stdlib.h>
 #include <math.h>
 
+void error_out(char *clue);
+double convert_num(char *num);
+
+int end_expression(char c);
+int end_term(char c);
+int not_syn(char c);
+int paren(char c);
+int whitespace(char c);
+int isop(char c);
+
+int end(char *s);
+int openp(char *s);
+int closep(char *s);
+int is_op(char *s);
+
+int sub(char *operand);
+int add(char *operand);
+int isdiv(char *operand);
+int mul(char *operand);
+
+void copy(char *to, char *from);
+void printop(char op[][50]);
+int read(char *filename, char op[50000][50]);
+int prec(char *a, char *b);
+double do_op(double a, char *op, double b);
+double expression(char op[5000][50], int l);
+
+int main(int argc, char **argv)
+{
+    argc--;
+    char op[5000][50];
+    int i, l;
+    char filename[20];
+    if (argc == 0)
+    {
+        printf("No filename specified. Please provide one: ");
+        scanf(" %s", filename);
+        argv[1] = filename;
+        argc++;
+    }
+
+    double ans[2];
+
+    for (i = 0; i < argc; i++)
+    {
+        l = read(argv[i + 1], op);
+        printop(op);
+        printf("%lf\n", expression(op, l));
+    }
+}
+
 void error_out(char *clue)
 {
     printf("ERRORRRRRR\n");
@@ -52,30 +103,37 @@ int end_expression(char c)
 {
     return c == ')' || c == 0;
 }
+
 int end_term(char c)
 {
     return c == '+' || c == '-' || c == ')' || c == 0;
 }
+
 int not_syn(char c)
 {
     return c != ')' && c != '(' && c != ' ';
 }
+
 int paren(char c)
 {
     return c == ')' || c == '(';
 }
+
 int whitespace(char c)
 {
     return c == ' ' || c == '\n';
 }
+
 int end(char *s)
 {
     return s[0] == ')' || s[0] <= 0;
 }
+
 int openp(char *s)
 {
     return s[0] == '(';
 }
+
 int closep(char *s)
 {
     return s[0] == ')';
@@ -85,26 +143,31 @@ int sub(char *operand)
 {
     return operand[0] == '-' && operand[1] < 1;
 }
+
 int add(char *operand)
 {
     return operand[0] == '+' && operand[1] < 1;
 }
+
 int isdiv(char *operand)
 {
     return operand[0] == '/' && operand[1] < 1;
 }
+
 int mul(char *operand)
 {
     return operand[0] == '*' && operand[1] < 1;
 }
+
 int is_op(char *s)
 {
     return sub(s) || add(s) || isdiv(s) || mul(s);
 }
+
 int isop(char c)
 {
     return c == '+' || c == '-' || c == '*' || c == '/';
-};
+}
 
 void copy(char *to, char *from)
 {
@@ -289,28 +352,4 @@ double expression(char op[5000][50], int l)
         sn--;
     }
     return operand[0];
-}
-
-int main(int argc, char **argv)
-{
-    argc--;
-    char op[5000][50];
-    int i, l;
-    char filename[20];
-    if (argc == 0)
-    {
-        printf("No filename specified. Please provide one: ");
-        scanf(" %s", filename);
-        argv[1] = filename;
-        argc++;
-    }
-
-    double ans[2];
-
-    for (i = 0; i < argc; i++)
-    {
-        l = read(argv[i + 1], op);
-        printop(op);
-        printf("%lf\n", expression(op, l));
-    }
 }

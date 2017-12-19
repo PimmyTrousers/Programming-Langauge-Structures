@@ -1,0 +1,51 @@
+ <HEAD>
+<TITLE>Basic HTML Sample Page</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="WHITE">
+<CENTER>
+<H1>Postscript HTTP Server</H1>
+
+ 
+
+  <IMG SRC="https://artsagainstcuts.files.wordpress.com/2011/08/postscript.jpg">
+
+ 
+
+ 
+
+  <H4>By Pim Trouerbach</H4>
+
+<H2>Why Would Anyone Want To Do This?</H2>
+
+</CENTER>
+
+Postscript is langauge mainly centered around PDFs and graphics. I personally have no interest in making graphics or fractals so I decided to see if an HTTP server was possible with a language that doesnt support basic network functions. <P>
+    
+
+    The inspiration behind this project came from a similar project where someone created a HTTP server in bash.<P>
+    
+
+    <H2>The 3 basic components to an HTTP server are</H2><P>
+    &emsp;         - Read the commmand<P>
+    &emsp;         - Check if the connection is persistent<P>
+    &emsp;         - Respond to the request<P>
+
+
+    <H2>Lets Prove This is PostScript</H2>
+
+    If we look at the headers of the request in developer tools we see various things:<P>
+    &emsp; - The server responding is httPS/1.6<P>
+    &emsp; - The relative content length<P>
+    &emsp; - The relative content type<P>
+    &emsp; - Along with a request for the title picture above<P>
+
+    <H2>Now that we have seen the headers that are required lets look at examples of content we can serve:</H2><P>
+
+    Pictures:<P>
+    <IMG SRC="101.jpg"><P>
+    <IMG SRC="Lewis-Clark-College-Manor-House_hero.jpeg.jpg" style="width:750px;height:500px;" /><P>
+    GIFs:<P>
+    <IMG SRC="https://media0.giphy.com/media/yidUzqLoT6SxgKzv20/giphy.gif"><P>
+    <img src="http://i.stack.imgur.com/SBv4T.gif" title="this slowpoke moves" />
+    
